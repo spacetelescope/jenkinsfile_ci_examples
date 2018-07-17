@@ -1,3 +1,8 @@
+// Using any available Linux system:
+//   1. Clone the source code for this repository
+//   2. Build and install the project locally
+//   3. Test the project
+
 node("linux") {
     stage("Checkout") {
         scm checkout

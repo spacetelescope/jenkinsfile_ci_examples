@@ -1,3 +1,12 @@
+// Using any available Linux system:
+//   1. Clone the source code for this repository
+//   2. Build and install the project locally
+//   3. Test the project
+//   4. Upload the `test_results` directory to a repository on Artifactory
+//   5. Publish information associated with this Jenkins job ID to Artifactory
+//      (i.e. Files uploaded from here will be directly traceable back to the
+//      job that executed this Jenkinsfile.)
+
 node("linux") {
     stage("Checkout") {
         scm checkout
