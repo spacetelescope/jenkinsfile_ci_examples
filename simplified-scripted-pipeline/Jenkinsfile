@@ -8,7 +8,7 @@ bc0.env_vars = ['PREFIX=/opt/testbed',
 bc0.build_cmds = ["make",
                   "make install PREFIX=$PREFIX"]
 bc0.test_cmds = ["make check",
-                 "my_program --help",
-                 "my_program --version"]
+                 "simple --help",
+                 "simple --version"]
  
 utils.run([bc0])
