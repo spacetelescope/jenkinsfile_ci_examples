@@ -5,7 +5,7 @@
 //        (i.e. Each stage is guaranteed to receive the same source code regardless of commits
 //        taking place after the pipeline has started.)
 if (utils.scm_checkout()) return
- 
+
 // (Required) Create a new build configuration
 bc0 = new BuildConfig()
 
@@ -29,6 +29,6 @@ bc0.build_cmds = ["make",
 bc0.test_cmds = ["make check",
                  "simple --help",
                  "simple --version"]
- 
-// (Required) Submit the build configuration(s) and execute them tasks in parallel
+
+// (Required) Submit the build configuration(s) and execute tasks in parallel
 utils.run([bc0])
