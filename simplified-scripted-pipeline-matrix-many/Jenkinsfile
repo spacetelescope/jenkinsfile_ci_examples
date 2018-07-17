@@ -1,0 +1,56 @@
+// scm_checkout() does the following:
+//     1. Disables pipeline execution if [skip ci] or [ci skip] is present in the commit message
+//     2. Clones the Git repository
+//     3. Creates a local cache of the repository to avoid commit drift between tasks
+//        (i.e. Each stage is guaranteed to receive the same source code regardless of commits
+//        taking place after the pipeline has started.)
+if (utils.scm_checkout()) return
+
+versions = [
+    "gcc": ["4.4.6", "4.8.5", "8.1.0"],
+    "make": ["4.2.1", "4.1", "3.8.2"],
+]
+matrix = []
+
+// Iterate over package versions listed in the `versions` map
+for (gcc in versions["gcc"]) {
+for (make in versions["make"]) {
+    // (Required) Create a new build configuration
+    builder = new BuildConfig()
+
+    // (Required) Use Linux to execute any stages defined here
+    builder.nodetype = "linux"
+
+    // (Required) Give the build configuration a name.
+    //            This string becomes the stage header on Jenkins' UI.
+    //            Keep it short...
+    builder.name = "Install (gcc=${gcc}, make=${make})"
+
+    // (Optional) Define global environment variables
+    builder.env_vars = ['PREFIX=/opt/testbed',
+                    'PATH=/opt/testbed/bin:$PATH']
+
+    // (Required) Execute a series of commands
+    // NOTE: This can't work because the versions described in the map are not actually available
+    //       This is only here to showcase the "possibilities".
+    builder.build_cmds = ["sudo yum install --yes gcc-${gcc} make-${make}",
+                          "make",
+                          "make install PREFIX=$PREFIX"]
+
+    // (Optional) Execute a series of test commands
+    builder.test_cmds = ["make check",
+                     "simple --help",
+                     "simple --version"]
+    matrix += builder
+}} // end iteration
+
+
+// Create a new build configuration that generate a source distribution archive for the project.
+dist = new BuildConfig()
+dist.nodetype = "linux"
+dist.name = "Dist"
+dist.build_cmds = ["git archive --format=tar.gz -o /tmp/simple-src.tar.gz --prefix=simple-src/ HEAD"]
+matrix += dist
+
+// (Required) Submit the build configuration(s) and execute them serially
+utils.run(matrix, concurrent=false)
