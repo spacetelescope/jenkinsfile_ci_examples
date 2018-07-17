@@ -24,8 +24,8 @@ dc0.insert("Everything", ingest)
 bc0 = new BuildConfig()
 bc0.nodetype = "linux"
 bc0.name = "Install"
-bc0.env_vars = ['PREFIX=/opt/testbed',
-                'PATH=/opt/testbed/bin:$PATH']
+bc0.env_vars = ['PREFIX=/tmp/testbed',
+                'PATH=/tmp/testbed/bin:$PATH']
 bc0.build_cmds = ["make",
                   "make install PREFIX=$PREFIX"]
 

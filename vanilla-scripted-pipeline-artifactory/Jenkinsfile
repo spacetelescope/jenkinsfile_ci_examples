@@ -12,7 +12,7 @@ node("linux") {
         scm checkout
     }
     stage("Install") {
-        env.PREFIX = "/opt/testbed"
+        env.PREFIX = "/tmp/testbed"
         sh "make"
         sh "make install PREFIX=${env.PREFIX}"
     }

@@ -27,8 +27,8 @@ for (make in versions["make"]) {
     builder.name = "Install (gcc=${gcc}, make=${make})"
 
     // (Optional) Define global environment variables
-    builder.env_vars = ['PREFIX=/opt/testbed',
-                    'PATH=/opt/testbed/bin:$PATH']
+    builder.env_vars = ['PREFIX=/tmp/testbed',
+                       'PATH=/tmp/testbed/bin:$PATH']
 
     // (Required) Execute a series of commands
     // NOTE: This can't work because the versions described in the map are not actually available
