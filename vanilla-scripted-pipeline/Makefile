@@ -21,4 +21,4 @@ clean:
 	rm -f simple
 	rm -f result.txt
 	rm -rf $(TEST_RESULT_DIR)
-	
+

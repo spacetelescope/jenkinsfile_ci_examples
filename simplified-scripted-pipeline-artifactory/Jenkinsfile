@@ -1,5 +1,5 @@
 if (utils.scm_checkout()) return
- 
+
 // Create a Groovy Map that conforms to Artifactory's upload schema:
 //     https://www.jfrog.com/confluence/display/RTF/Using+File+Specs#UsingFileSpecs-UploadSpecSchema
 def ingest = [
@@ -8,11 +8,11 @@ def ingest = [
          "target": "generic-local/testbed/static/"],
     ],
 ]
- 
+
 // Create a new data configuration
 dc0 = new DataConfig()
 
-// Which Artifactory instance should be used? 
+// Which Artifactory instance should be used?
 // "bytesalad" is the identifaction string used for our Artifactory instance
 dc0.server_id = "bytesalad"
 
@@ -35,5 +35,5 @@ bc0.test_configs = [dc0]
 bc0.test_cmds = ["make check",
                  "simple --help",
                  "simple --version"]
- 
+
 utils.run([bc0])

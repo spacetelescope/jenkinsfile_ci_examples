@@ -1,0 +1,47 @@
+// scm_checkout() does the following:
+//     1. Disables pipeline execution if [skip ci] or [ci skip] is present in the commit message
+//     2. Clones the Git repository
+//     3. Creates a local cache of the repository to avoid commit drift between tasks
+//        (i.e. Each stage is guaranteed to receive the same source code regardless of commits
+//        taking place after the pipeline has started.)
+if (utils.scm_checkout()) return
+
+
+
+matrix = []
+
+// (Required) Create a new build configuration
+bc0 = new BuildConfig()
+
+// (Required) Use Linux to execute any stages defined here
+bc0.nodetype = "linux"
+
+// (Required) Give the build configuration a name.
+//            This string becomes the stage header on Jenkins' UI.
+//            Keep it short...
+bc0.name = "Install"
+
+// (Optional) Define global environment variables
+bc0.env_vars = ['PREFIX=/opt/testbed',
+                'PATH=/opt/testbed/bin:$PATH']
+
+// (Required) Execute a series of commands
+bc0.build_cmds = ["make",
+                  "make install PREFIX=$PREFIX"]
+
+// (Optional) Execute a series of test commands
+bc0.test_cmds = ["make check",
+                 "simple --help",
+                 "simple --version"]
+matrix += bc0
+
+
+// Create a new build configuration that generate a source distribution archive for the project.
+bc1 = new BuildConfig()
+bc1.nodetype = "linux"
+bc1.name = "Dist"
+bc1.build_cmds = ["git archive --format=tar.gz -o /tmp/simple-src.tar.gz --prefix=simple-src/ HEAD"]
+matrix += bc1
+
+// (Required) Submit the build configuration(s) and execute them in parallel
+utils.run(matrix)
