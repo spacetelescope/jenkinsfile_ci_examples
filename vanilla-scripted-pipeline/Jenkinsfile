@@ -1,0 +1,16 @@
+node("linux") {
+    stage("Checkout") {
+        scm checkout
+    }
+    stage("Install") {
+        env.PREFIX = "/opt/testbed"
+        sh "make"
+        sh "make install PREFIX=${env.PREFIX}"
+    }
+    stage("Test") {
+        env.PATH = "${env.PREFIX}/bin:${env.PATH}"
+        sh "make check"
+        sh "simple --help"
+        sh "simple --version"
+    }
+}
