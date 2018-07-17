@@ -1,0 +1,25 @@
+if (utils.scm_checkout()) return
+ 
+def ingest = [
+    "files": [
+        ["pattern": "test_results/**",
+         "target": "generic-local/testbed/static/"],
+    ],
+]
+ 
+dc0 = new DataConfig()
+dc0.server_id = "bytesalad"
+dc0.insert("Everything", ingest)
+
+bc0 = new BuildConfig()
+bc0.nodetype = "linux"
+bc0.name = "Install"
+bc0.env_vars = ['PREFIX=/opt/testbed',
+                'PATH=/opt/testbed/bin:$PATH']
+bc0.build_cmds = ["make",
+                  "make install PREFIX=$PREFIX"]
+bc0.test_cmds = ["make check",
+                 "my_program --help",
+                 "my_program --version"]
+ 
+utils.run([bc0])
