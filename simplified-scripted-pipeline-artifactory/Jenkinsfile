@@ -1,5 +1,7 @@
 if (utils.scm_checkout()) return
  
+// Create a Groovy Map that conforms to Artifactory's upload schema:
+//     https://www.jfrog.com/confluence/display/RTF/Using+File+Specs#UsingFileSpecs-UploadSpecSchema
 def ingest = [
     "files": [
         ["pattern": "test_results/**",
@@ -7,8 +9,16 @@ def ingest = [
     ],
 ]
  
+// Create a new data configuration
 dc0 = new DataConfig()
+
+// Which Artifactory instance should be used? 
+// "bytesalad" is the identifaction string used for our Artifactory instance
 dc0.server_id = "bytesalad"
+
+// Add the `ingest` map to the data configuration
+// NOTE: The first argument to the `.insert` function is an arbitrary string
+//       given to identify the incoming data. It serves no other purpose.
 dc0.insert("Everything", ingest)
 
 bc0 = new BuildConfig()
@@ -18,6 +28,10 @@ bc0.env_vars = ['PREFIX=/opt/testbed',
                 'PATH=/opt/testbed/bin:$PATH']
 bc0.build_cmds = ["make",
                   "make install PREFIX=$PREFIX"]
+
+// Pass the data configuration into the build configuration object for processing
+bc0.test_configs = [dc0]
+
 bc0.test_cmds = ["make check",
                  "simple --help",
                  "simple --version"]
